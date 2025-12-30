@@ -17,11 +17,11 @@
   <h1>QR Scanner</h1>
 
   <div class="row">
-    <button id="startBtn">Scan QR code</button>
-    <button id="stopBtn" style="display:none;">Stop</button>
+    <button type="button" id="startBtn">Scan QR code</button>
+    <button type="button" id="stopBtn" style="display:none;">Stop</button>
   </div>
 
-  <div class="muted">Tip: This works best on HTTPS (or localhost). iOS Safari requires HTTPS for camera access.</div>
+  <div class="muted">Works on HTTPS (or localhost). iOS Safari requires HTTPS for camera access.</div>
 
   <div id="reader"></div>
 
@@ -33,7 +33,6 @@
     </div>
   </div>
 
-  <!-- QR scanning library -->
   <script src="https://unpkg.com/html5-qrcode@2.3.10/html5-qrcode.min.js"></script>
   <script>
     const startBtn = document.getElementById("startBtn");
@@ -44,23 +43,17 @@
     const openLink = document.getElementById("openLink");
 
     const isProbablyUrl = (text) => {
-      try {
-        const u = new URL(text);
-        return u.protocol === "http:" || u.protocol === "https:";
-      } catch {
-        return false;
-      }
+      try { const u = new URL(text); return u.protocol === "http:" || u.protocol === "https:"; }
+      catch { return false; }
     };
 
-    let qr; // Html5Qrcode instance
+    let qr;
     let isRunning = false;
 
     async function startScan() {
       if (isRunning) return;
 
-      // Create the scanner instance (uses a div as the render target)
       qr = new Html5Qrcode("reader");
-
       readerEl.style.display = "block";
       startBtn.style.display = "none";
       stopBtn.style.display = "inline-block";
@@ -68,36 +61,24 @@
       actions.style.display = "none";
       openLink.href = "#";
 
-      const config = {
-        fps: 10,
-        qrbox: { width: 260, height: 260 },
-        // You can also set: aspectRatio: 1.0
-      };
+      const config = { fps: 10, qrbox: { width: 260, height: 260 } };
 
       try {
         isRunning = true;
         await qr.start(
-          { facingMode: "environment" }, // back camera
+          { facingMode: "environment" },
           config,
           (decodedText) => {
-            // SUCCESS callback
             resultText.textContent = decodedText;
-
             if (isProbablyUrl(decodedText)) {
               openLink.href = decodedText;
               actions.style.display = "block";
-              // Optional: auto-open
-              // window.open(decodedText, "_blank", "noopener");
             } else {
               actions.style.display = "none";
             }
-
-            // Optional: stop after first successful scan
-            stopScan();
+            stopScan(); // remove this line if you want continuous scanning
           },
-          (errorMessage) => {
-            // ERROR callback (ignore noisy scan errors)
-          }
+          () => {}
         );
       } catch (err) {
         isRunning = false;
@@ -110,10 +91,8 @@
 
     async function stopScan() {
       if (!qr || !isRunning) return;
-      try {
-        await qr.stop();
-        await qr.clear();
-      } finally {
+      try { await qr.stop(); await qr.clear(); }
+      finally {
         isRunning = false;
         readerEl.style.display = "none";
         startBtn.style.display = "inline-block";
