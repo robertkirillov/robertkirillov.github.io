@@ -6,231 +6,136 @@
   <title>Hitster — Eesti</title>
 
   <style>
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin: 0;
-      padding: 16px;
-      background: #fafafa;
+    :root{
+      --bg1:#0b1020;
+      --bg2:#17113a;
+      --card: rgba(255,255,255,.10);
+      --card2: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --accent:#7c3aed;   /* violet */
+      --accent2:#22c55e;  /* green */
+      --danger:#ef4444;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 18px;
     }
-    .wrap {
-      max-width: 720px;
+
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(124,58,237,.45), transparent 55%),
+        radial-gradient(900px 500px at 90% 0%, rgba(34,197,94,.25), transparent 55%),
+        radial-gradient(900px 700px at 50% 120%, rgba(59,130,246,.18), transparent 50%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      padding: 18px 16px 28px;
+    }
+
+    .wrap{
+      max-width: 780px;
       margin: 0 auto;
     }
-    h1 {
-      margin: 0 0 12px;
+
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 12px;
     }
-    button {
-      padding: 12px 18px;
-      font-size: 16px;
-      border: 0;
-      border-radius: 12px;
-      cursor: pointer;
+
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
     }
-    #scanBtn {
-      width: 100%;
-    }
-    #stopBtn {
-      width: 100%;
-      margin-top: 10px;
-      display: none;
-    }
-    #status {
-      margin-top: 12px;
-      opacity: 0.75;
-    }
-    video {
-      width: 100%;
-      margin-top: 12px;
-      border-radius: 14px;
-      background: #000;
-      display: none;
-    }
-    .card {
-      margin-top: 16px;
-      padding: 16px;
-      border-radius: 16px;
-      background: #fff;
-      box-shadow: 0 6px 20px rgba(0,0,0,.06);
-      display: none;
-      text-align: center;
-    }
-    .card h2 {
-      margin: 0 0 8px;
+
+    .title{
       font-size: 22px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      margin:0;
+      line-height: 1.05;
     }
-    audio {
-      width: 100%;
-      margin-top: 10px;
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <h1>Hitster — Eesti</h1>
-
-    <button id="scanBtn">Scan</button>
-    <button id="stopBtn">Stop</button>
-
-    <div id="status">Vajuta “Scan”, et avada kaamera.</div>
-
-    <video id="video" playsinline muted></video>
-    <canvas id="canvas" style="display:none;"></canvas>
-
-    <div class="card" id="playerCard">
-      <h2>Muusika mängib 🎵</h2>
-      <audio id="audio" controls></audio>
-    </div>
-  </div>
-
-  <!-- QR decoder fallback (Safari compatible) -->
-  <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
-
-  <script>
-    const scanBtn = document.getElementById("scanBtn");
-    const stopBtn = document.getElementById("stopBtn");
-    const statusEl = document.getElementById("status");
-
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-
-    const playerCard = document.getElementById("playerCard");
-    const audioEl = document.getElementById("audio");
-
-    let songs = [];
-    let stream = null;
-    let running = false;
-    let rafId = null;
-    let detector = null;
-
-    function setStatus(msg) {
-      statusEl.textContent = msg;
+    .subtitle{
+      margin:0;
+      font-size: 13px;
+      color: var(--muted);
     }
 
-    async function loadSongs() {
-      const res = await fetch("songs.json", { cache: "no-store" });
-      if (!res.ok) throw new Error("songs.json missing");
-      songs = await res.json();
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 10px 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.07);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--muted);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .dot{
+      width:10px; height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.35);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.06);
+    }
+    .dot.ok{ background: var(--accent2); box-shadow: 0 0 0 4px rgba(34,197,94,.18); }
+    .dot.warn{ background: #fbbf24; box-shadow: 0 0 0 4px rgba(251,191,36,.18); }
+
+    .card{
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow:hidden;
     }
 
-    function parseQr(text) {
-      return String(text || "").trim();
+    .actions{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top: 12px;
     }
 
-    function findSong(id) {
-      return songs.find(s => s.id === id) || null;
+    .btn{
+      width:100%;
+      border: 0;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: transform .06s ease, opacity .2s ease;
+      touch-action: manipulation;
     }
-
-    async function startRound(song) {
-      playerCard.style.display = "block";
-      audioEl.pause();
-      audioEl.src = song.clip;
-      audioEl.currentTime = 0;
-      audioEl.play().catch(() => {});
-      setStatus("Muusika mängib");
+    .btn:active{ transform: scale(.99); }
+    .btn-primary{
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
     }
-
-    async function startCamera() {
-      await stopCamera();
-
-      setStatus("Kaamera luba…");
-
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: { facingMode: { ideal: "environment" } }
-      });
-
-      video.srcObject = stream;
-      video.style.display = "block";
-      await video.play();
-
-      running = true;
-      stopBtn.style.display = "block";
-
-      if ("BarcodeDetector" in window) {
-        try {
-          detector = new BarcodeDetector({ formats: ["qr_code"] });
-        } catch {
-          detector = null;
-        }
-      } else {
-        detector = null;
-      }
-
-      setStatus("Näita QR-koodi kaamerale…");
-      scanLoop();
+    .btn-secondary{
+      background: rgba(255,255,255,.10);
+      border: 1px solid var(--stroke);
+      color: var(--text);
     }
-
-    async function stopCamera() {
-      running = false;
-      detector = null;
-
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = null;
-
-      if (video.srcObject) {
-        video.pause();
-        video.srcObject.getTracks().forEach(t => t.stop());
-        video.srcObject = null;
-      }
-
-      video.style.display = "none";
-      stopBtn.style.display = "none";
+    .btn-danger{
+      background: rgba(239,68,68,.18);
+      border: 1px solid rgba(239,68,68,.35);
+      color: #fff;
     }
+    .btn[disabled]{ opacity:.55; cursor:not-allowed; }
 
-    async function scanLoop() {
-      if (!running) return;
-
-      try {
-        if (video.readyState >= 2 && video.videoWidth && video.videoHeight) {
-          let text = null;
-
-          if (detector) {
-            const codes = await detector.detect(video);
-            if (codes.length) text = codes[0].rawValue;
-          } else {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const code = jsQR(img.data, img.width, img.height);
-            if (code) text = code.data;
-          }
-
-          if (text) {
-            const song = findSong(parseQr(text));
-            if (song) {
-              await stopCamera();
-              await startRound(song);
-              return;
-            } else {
-              setStatus(`QR loetud, kuid laulu ei leitud: ${text}`);
-            }
-          }
-        }
-      } catch (e) {
-        console.error(e);
-      }
-
-      rafId = requestAnimationFrame(scanLoop);
-    }
-
-    scanBtn.addEventListener("click", async () => {
-      try {
-        if (!songs.length) await loadSongs();
-        await startCamera();
-      } catch (e) {
-        console.error(e);
-        setStatus("Ei saanud kaamerat käivitada või songs.json puudub.");
-      }
-    });
-
-    stopBtn.addEventListener("click", stopCamera);
-
-    window.addEventListener("pagehide", stopCamera);
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) stopCamera();
-    });
-  </script>
-</body>
-</html>
+    #status{
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--
