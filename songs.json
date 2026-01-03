@@ -1,6 +1,8 @@
 [
   {
     "id": "est-001",
+    "artist": "Traffic",
+    "title": "Tulgu tuuled",
+    "year": 2011,
     "clip": "assets/audio/est-001.mp3"
   }
-]
