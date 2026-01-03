@@ -164,13 +164,17 @@
     }
 
     function makeQrDataUrl(text, size){
-      // QRCode.toDataURL returns a promise
-      return QRCode.toDataURL(text, {
-        width: size,
-        margin: 1,
-        errorCorrectionLevel: "L" // kiirem kui M/Q/H
-      });
-    }
+  return new Promise((resolve, reject) => {
+    QRCode.toDataURL(
+      text,
+      { width: size, margin: 1, errorCorrectionLevel: "L" },
+      (err, url) => {
+        if (err) reject(err);
+        else resolve(url);
+      }
+    );
+  });
+}
 
     async function render(){
       grid.innerHTML = "";
