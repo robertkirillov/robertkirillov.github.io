@@ -1,20 +1,182 @@
 <!doctype html>
-<html lang="en">
+<html lang="et">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Results</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Andmete Analüüs - Results</title>
     <script async src="https://api.glia.com/salemove_integration.js"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .dashboard {
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .full-width { grid-column: 1 / -1; }
+
+        h2 { color: var(--accent); margin-top: 0; border-bottom: 2px solid #334155; padding-bottom: 10px; }
+
+        /* Scrollitav ala */
+        .scroll-container {
+            height: 200px;
+            overflow-y: scroll;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px inset #334155;
+        }
+
+        .list-item {
+            padding: 10px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Vormi elemendid */
+        select, input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: white;
+        }
+
+        button {
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+        }
+
+        button:hover { background: #7dd3fc; transform: scale(1.02); }
+
+        .back-btn {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* Progress bar animatsioon */
+        .progress-track {
+            background: #334155;
+            border-radius: 20px;
+            height: 20px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            height: 100%;
+            border-radius: 20px;
+            width: 75%;
+            animation: grow 2s ease-out;
+        }
+
+        @keyframes grow {
+            from { width: 0%; }
+            to { width: 75%; }
+        }
+    </style>
 </head>
 <body>
-<div>
-    <p>Actually, nothing to see here</p>
+
+<div class="dashboard">
+    <div class="full-width">
+        <a href="index.html" class="back-btn">← Tagasi avalehele</a>
+        <h1>📊 Tulemuste Paneel</h1>
+    </div>
+
+    <div class="card">
+        <h2>Viimased logid</h2>
+        <div class="scroll-container">
+            <div class="list-item"><span>Kasutaja liitus</span> <span>12:01</span></div>
+            <div class="list-item"><span>Vorm esitatud</span> <span>12:05</span></div>
+            <div class="list-item"><span>Fail üles laaditud</span> <span>12:10</span></div>
+            <div class="list-item"><span>Vestlus alustatud</span> <span>12:15</span></div>
+            <div class="list-item"><span>Süsteemi kontroll</span> <span>12:20</span></div>
+            <div class="list-item"><span>Andmed uuendatud</span> <span>12:25</span></div>
+            <div class="list-item"><span>Sessioon aegus</span> <span>12:30</span></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Seadistused</h2>
+        <label>Vali kategooria:</label>
+        <select id="category">
+            <option value="all">Kõik andmed</option>
+            <option value="filtered">Filtreeritud</option>
+            <option value="raw">Toored andmed</option>
+        </select>
+
+        <label>Andmete maht:</label>
+        <input type="range" min="1" max="100" value="75">
+        
+        <button onclick="alert('Andmed salvestatud!')">Salvesta muudatused</button>
+        <button style="background: #ef4444; color: white;">Kustuta ajalugu</button>
+    </div>
+
+    <div class="card">
+        <h2>Süsteemi olek</h2>
+        <p>Serveri koormus:</p>
+        <div class="progress-track">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <div style="flex: 1; text-align: center; background: #064e3b; padding: 10px; border-radius: 8px;">
+                <small>Stabiilsus</small><br><strong>99.9%</strong>
+            </div>
+            <div style="flex: 1; text-align: center; background: #450a0a; padding: 10px; border-radius: 8px;">
+                <small>Vead</small><br><strong>2</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="card full-width">
+        <h2>Lisa märge tulemuste kohta</h2>
+        <textarea style="width: 100%; background: #0f172a; color: white; border-radius: 8px; border: 1px solid #475569; padding: 10px; min-height: 80px;" placeholder="Kirjuta siia..."></textarea>
+        <div style="margin-top: 10px;">
+            <input type="checkbox" id="confirm" style="width: auto;">
+            <label for="confirm">Kinnitan andmete õigsust</label>
+        </div>
+    </div>
 </div>
-<div>
-    <a href="index.html">Back</a>
-</div>
+
 </body>
 </html>
