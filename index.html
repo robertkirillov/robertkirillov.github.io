@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="et">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-NBLBG6VLD1"></script>
   <script>
@@ -9,121 +9,180 @@
     gtag('config', 'G-NBLBG6VLD1');
   </script>
   <script async src="https://api.glia.com/salemove_integration.js"></script>
+
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Form</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interaktiivne Testkeskkond</title>
+  
+  <style>
+    :root {
+      --primary: #6366f1;
+      --secondary: #ec4899;
+      --bg: #0f172a;
+      --text: #f8fafc;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    nav {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    /* Stiilsed nupud ja lingid */
+    .nav-link {
+      text-decoration: none;
+      color: white;
+      padding: 10px 20px;
+      background: var(--primary);
+      border-radius: 8px;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .nav-link:hover {
+      transform: translateY(-3px);
+      background: #4f46e5;
+    }
+
+    .btn-special {
+      cursor: pointer;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: bold;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+    }
+
+    /* iFrame sektsioon */
+    .media-section {
+      margin: 30px 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 250px;
+      border-radius: 12px;
+      border: 2px solid var(--primary);
+    }
+
+    .gif-container img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+    }
+
+    /* Glia spetsiifiline nupu osa */
+    .glia-tools {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+      border-left: 4px solid var(--secondary);
+    }
+
+    .floating-box {
+      width: 100px;
+      height: 100px;
+      background: var(--secondary);
+      margin: 20px 0;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: rotate 4s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-  <div>
-    <a name="results" href="results.html">Results</a>
-    <a name="hints" href="hints.html">Hints</a>
-    <a href="qrscan.html">
-  <button>Open QR Scanner</button>
-</a>
 
-  </div>
+  <div class="container">
+    <header>
+      <h1>🚀 Test Laboratory 2.0</h1>
+      <p>Glia integratsiooni ja veebielementide mänguväljak</p>
+    </header>
 
-  <br>
+    <nav>
+      <a class="nav-link" href="results.html">Andmebaas</a>
+      <a class="nav-link" href="hints.html">Vihjed</a>
+      <a class="nav-link" href="qrscan.html" style="background: #10b981;">📷 QR Skanner</a>
+      <a class="nav-link" href="https://hannesgregor.github.io/" target="_blank" style="background: #6b7280;">Väline Link</a>
+    </nav>
 
-  <form action="results.html" method="GET" enctype="multipart/form-data">
-    <div>
-      <label for="name">Name</label>
-      <input type="text" name="name" id="name" required>
-    </div>
-
-    <div>
-      <label for="email">Email</label>
-      <input class="sm_cobrowsing_disabled_field" tabindex="-1" type="email" name="email" id="email" required>
-    </div>
-
-    <div>
-      <label for="date">Birthdate</label>
-      <input type="date" name="date" id="date" min="2019-06-10">
-    </div>
-
-    <div>
-      Favorite Food
-      <div>
-        <label for="banana">Banana</label>
-        <input type="checkbox" name="banana" id="banana">
+    <div class="media-section">
+      <div class="video-box">
+        <h3>iFrame Video</h3>
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video" frameborder="0" allowfullscreen></iframe>
       </div>
-      <div>
-        <label for="apple">Apple</label>
-        <input type="checkbox" name="apple" id="apple">
+      <div class="gif-container">
+        <h3>Animatsioon</h3>
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZidXJreXp4Z3R4bmN4bmN4bmN4bmN4bmN4bmN4bmN4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKVUn7iM8FMEU24/giphy.gif" alt="Cool Animation">
       </div>
     </div>
 
-    <div>
-      Gender
-      <div>
-        <label for="male">Male</label>
-        <input type="radio" name="gender" id="male" value="male">
+    <hr style="opacity: 0.1; margin: 30px 0;">
+
+    <div class="main-content">
+      <h3>Interaktiivsed elemendid</h3>
+      <div style="display: flex; gap: 20px; align-items: center;">
+        <button class="btn-special" onclick="alert('Tere tulemast uuele lehele!')">Vajuta mind!</button>
+        <div class="floating-box">GLIA</div>
       </div>
-      <div>
-        <label for="female">Female</label>
-        <input type="radio" name="gender" id="female" value="female">
+
+      <div class="glia-tools">
+        <h4>Glia Co-Browsing Abimees</h4>
+        <p>Kasuta allolevat nuppu, et genereerida külastaja kood:</p>
+        <button 
+          type="button" 
+          class="nav-link omnibrowse-code-button" 
+          style="border:none; cursor:pointer;"
+          onclick="document.body.appendChild(document.createElement('sm-visitor-code'))">
+          Genereeri CoBrowsing kood
+        </button>
       </div>
     </div>
 
-    <input type="hidden" name="hidden" value="hi">
-
-    <div>
-      <label for="color">Color</label>
-      <input type="color" name="color" id="color">
-    </div>
-
-    <div>
-      <label>
-        Password
-        <input type="password" name="password" required>
-      </label>
-    </div>
-
-    <!-- =========================
-         Shadow DOM panel (middle)
-         ========================= -->
     <div id="shadow-host"></div>
-
-    <div style="margin: 12px 0;">
-      <a href="https://hannesgregor.github.io/"
-         style="text-decoration:none;padding:10px 20px;background-color:#4CAF50;color:#fff;border-radius:5px;display:inline-block;">
-        Go to hannesgregor.github.io
-      </a>
-    </div>
-
-    <button type="reset">Reset</button>
-    <button
-      type="button"
-      class="omnibrowse-code-button"
-      onclick="document.body.appendChild(document.createElement('sm-visitor-code'))">
-      Get CoBrowsing code
-    </button>
-    <button type="submit">Submit</button>
-  </form>
-
-  <label for="test-dropdown-1">sm_cobrowsing_disabled_field</label>
-  <div class="sm_cobrowsing_disabled_field">
-    <select id="test-dropdown-1" name="test" title="test">
-      <option value="test1">test1</option>
-      <option value="test2">test2</option>
-      <option value="test3">test3</option>
-    </select>
   </div>
 
-  <label for="test-dropdown-2">sm_cobrowsing_hidden_field</label>
-  <div class="sm_cobrowsing_hidden_field">
-    <select id="test-dropdown-2" name="test2" title="test">
-      <option value="test1">test1</option>
-      <option value="test2">test2</option>
-      <option value="test3">test3</option>
-    </select>
-  </div>
-
-  <!-- Shadow DOM script -->
   <script>
+    // Shadow DOM paneel uue disainiga
     (function () {
       const host = document.getElementById('shadow-host');
       if (!host) return;
@@ -131,64 +190,42 @@
       const root = host.attachShadow({ mode: 'open' });
       root.innerHTML = `
         <style>
-          :host { all: initial; }
-          .card {
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-            border: 1px solid rgba(0,0,0,.1);
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 6px 18px rgba(0,0,0,.08);
-            display: grid;
-            gap: 8px;
-            max-width: 520px;
-            margin: 16px 0;
-          }
-          .title { font-weight: 700; font-size: 1.05rem; }
-          .sub { font-size: .9rem; opacity: .8; }
-          .row { display: flex; gap: 8px; align-items: center; }
-          .badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: .75rem;
-            background: #eef6ff;
-            border: 1px solid #cfe3ff;
+          .shadow-card {
+            background: #1e293b;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+            border: 1px solid #334155;
+            text-align: center;
           }
           button {
-            appearance: none;
-            border: 0;
-            border-radius: 10px;
-            padding: 10px 14px;
-            cursor: pointer;
-            font-weight: 600;
-            background: #111827;
+            background: #ec4899;
             color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
           }
-          button:active { transform: translateY(1px); }
+          .count-text { font-size: 1.2rem; font-weight: bold; color: #fbbf24; }
         </style>
-
-        <div class="card" part="card">
-          <div class="row">
-            <span class="title">Shadow DOM Panel</span>
-            <span class="badge">encapsulated</span>
-          </div>
-          <div class="sub">
-            This block is rendered inside a <code>#shadow-root</code>. Its styles won’t leak out, and outside styles won’t leak in.
-          </div>
-          <button id="shadow-btn" type="button">Click me</button>
-          <div id="shadow-log" aria-live="polite"></div>
+        <div class="shadow-card">
+          <h3>📦 Eraldatud Shadow DOM</h3>
+          <p>See paneel elab omaette maailmas.</p>
+          <div class="count-text" id="log">Klikke: 0</div>
+          <button id="btn">Lisa klikk</button>
         </div>
       `;
 
-      const btn = root.getElementById('shadow-btn');
-      const log = root.getElementById('shadow-log');
+      const btn = root.getElementById('btn');
+      const log = root.getElementById('log');
       let count = 0;
       btn.addEventListener('click', () => {
-        count += 1;
-        log.textContent = `Clicked ${count} time${count === 1 ? '' : 's'}.`;
+        count++;
+        log.textContent = `Klikke: ${count}`;
       });
     })();
   </script>
 </body>
 </html>
-
