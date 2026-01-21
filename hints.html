@@ -1,20 +1,193 @@
 <!doctype html>
-<html lang="en">
+<html lang="et">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Hints</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Hints & Tips</title>
     <script async src="https://api.glia.com/salemove_integration.js"></script>
+    
+    <style>
+        :root {
+            --bg: #050505;
+            --card-bg: #111;
+            --neon-green: #39ff14;
+            --neon-blue: #00f3ff;
+            --text: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 1px solid var(--neon-green);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+
+        .back-link {
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        /* Akordion stiilis vihjed */
+        details {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        details[open] {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+ Salvesta        }
+
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--neon-green);
+            list-style: none;
+            outline: none;
+        }
+
+        summary::before {
+            content: "► ";
+        }
+
+        details[open] summary::before {
+            content: "▼ ";
+        }
+
+        /* Modaalaken (lihtne CSS lahendus) */
+        .modal-trigger {
+            background: var(--neon-blue);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .modal-trigger:hover {
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        #secret-box {
+            display: none;
+            background: #222;
+            border: 2px dashed var(--neon-blue);
+            padding: 20px;
+            margin-top: 20px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Tabel testimiseks */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th { background: #1a1a1a; color: var(--neon-blue); }
+
+    </style>
 </head>
 <body>
-<div>
-    <p>Actually, nothing to see here</p>
+
+<div class="wrapper">
+    <a href="index.html" class="back-link">« TAGASI TERMINAALI</a>
+    
+    <header>
+        <h1>🔐 HINTS & SYSTEM CODES</h1>
+        <p>Salajane informatsioon ja süsteemi vihjed</p>
+    </header>
+
+    <details>
+        <summary>Vihje #1: Kuidas kasutada CoBrowsingut?</summary>
+        <p>Vajuta avalehel olevat nuppu "Get CoBrowsing code". Seejärel ilmub ekraanile unikaalne kood, mille saad edastada agendile.</p>
+    </details>
+
+    <details>
+        <summary>Vihje #2: Varjatud andmeväljad</summary>
+        <p>Kasutame <code>sm_cobrowsing_hidden_field</code> klassi, et peita tundlikke andmeid agentide eest. See tagab privaatsuse.</p>
+    </details>
+
+    <details>
+        <summary>Vihje #3: Süsteemi tabel</summary>
+        <table>
+            <tr>
+                <th>Moodul</th>
+                <th>Staatus</th>
+            </tr>
+            <tr>
+                <td>Chat v2</td>
+                <td style="color: var(--neon-green);">Online</td>
+            </tr>
+            <tr>
+                <td>Video API</td>
+                <td style="color: orange;">Sünkroniseerimisel</td>
+            </tr>
+        </table>
+    </details>
+
+    <div style="text-align: center; margin-top: 40px;">
+        <h3>Kas soovid näha salajast koodi?</h3>
+        <button class="modal-trigger" onclick="toggleSecret()">AVA SALAHIDU</button>
+        
+        <div id="secret-box">
+            <h4 style="color: var(--neon-blue);">Sinu unikaalne ID:</h4>
+            <code id="random-id">GENERATING...</code>
+            <p><small>(See on genereeritud JavaScriptiga testimiseks)</small></p>
+        </div>
+    </div>
+
 </div>
-<div>
-    <a href="index.html">Back</a>
-</div>
+
+<script>
+    function toggleSecret() {
+        const box = document.getElementById('secret-box');
+        const idTag = document.getElementById('random-id');
+        
+        if (box.style.display === 'block') {
+            box.style.display = 'none';
+        } else {
+            box.style.display = 'block';
+            idTag.textContent = 'GLIA-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+    }
+</script>
+
 </body>
 </html>
