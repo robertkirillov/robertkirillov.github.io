@@ -3,158 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uus WOW – Sinu ideed loevad!</title>
+    <title>Uus WOW – Teeme Saaremaa lahedaima koha!</title>
     <style>
+        /* Modernne ja rõõmus värvipalett */
         :root {
-            --primary-blue: #0056b3;
-            --wow-orange: #ff9900;
-            --text-dark: #333;
-            --bg-light: #f4f7f6;
+            --primary-gradient: linear-gradient(135deg, #FF9966 0%, #FF5E62 100%); /* Rõõmus oranžikas-punane */
+            --secondary-color: #4facfe; /* Värske sinine aktsendiks */
+            --text-color: #2c3e50;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.18);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Montserrat', sans-serif; /* Vajab Google Fondi linki alla */
             margin: 0;
             padding: 0;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            line-height: 1.6;
+            background: var(--primary-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
+        /* Pealkirja stiil */
         header {
-            background: linear-gradient(135deg, var(--primary-blue), #003d7a);
+            text-align: center;
             color: white;
-            padding: 4rem 1rem;
-            text-align: center;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
-        }
-
-        .container {
-            max-width: 800px;
-            margin: -50px auto 50px;
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        h1 { margin-bottom: 0.5rem; font-size: 2.5rem; }
-        p.subtitle { font-size: 1.2rem; color: #eee; margin-top: 0; }
-
-        .intro-text {
             margin-bottom: 2rem;
-            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        /* "Klaasist" vormi konteiner */
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            width: 100%;
+            max-width: 600px;
+            padding: 2.5rem;
+            box-sizing: border-box;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .container:hover {
+            transform: translateY(-5px); /* Väike mänguline tõste */
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #FF5E62;
+            font-size: 2rem;
+        }
+
+        .intro-text p {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: #555;
+        }
+
+        /* Form elemendid */
         .form-group {
             margin-bottom: 1.5rem;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1rem;
         }
 
         input[type="text"], 
-        input[type="email"], 
         textarea, 
         select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
+            padding: 15px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.8);
             font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box; /* Oluline! */
+        }
+
+        input[type="text"]:focus, 
+        textarea:focus, 
+        select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            background-color: white;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
         }
 
         textarea { height: 120px; resize: vertical; }
 
+        /* Mänguline kategooria valik (emoji-ga) */
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 15px;
+            cursor: pointer;
+        }
+
+        /* Uus, rõõmus ja animeeritud nupp */
         button {
-            background-color: var(--wow-orange);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Teistmoodi gradient nupul */
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 8px;
+            padding: 18px 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px; /* Täiesti ümar */
             cursor: pointer;
             width: 100%;
-            transition: transform 0.2s, background-color 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
         }
 
         button:hover {
-            background-color: #e68a00;
-            transform: translateY(-2px);
+            transform: scale(1.05); /* Suureneb veidi hooveril */
+            box-shadow: 0 6px 20px rgba(118, 75, 162, 0.6);
         }
 
-        .saaremaa-vibes {
-            text-align: center;
-            margin-top: 2rem;
-            font-style: italic;
-            color: #666;
+        button:active {
+            transform: scale(0.98); /* Vajutades läheb väiksemaks */
         }
 
+        /* Jalus */
         footer {
+            margin-top: 3rem;
             text-align: center;
-            padding: 2rem;
+            color: white;
+            opacity: 0.8;
             font-size: 0.9rem;
-            color: #888;
+        }
+
+        /* Lisa Google Fondi link */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+
+        /* Mobiili optimeerimine */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .container { padding: 1.5rem; }
+            button { font-size: 1rem; padding: 15px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Uus WOW. Uus Elamus.</h1>
-    <p class="subtitle">Teeme koos Saaremaa lahedaima koha tagasi!</p>
+    <h1>Uus WOW.</h1>
+    <p class="subtitle">Teeme selle koos ägedaks!</p>
 </header>
 
 <div class="container">
     <div class="intro-text">
-        <h2>Kallis saarlane!</h2>
-        <p>Me teame, et ootused olid suured. Nüüd on aeg vigadest õppida ja WOW-keskus päriselt käima tõmmata. 
-           <strong>Mida SINA seal näha tahaksid?</strong> Kas rohkem ronimist, teadust, kohvikut või hoopis vaikset nurgakest?</p>
+        <h2>Aita meil unistada! 🚀</h2>
+        <p>Me oleme uued omanikud ja tahame ehitada midagi, mis teeb saarlased uhkeks. Mis on Sinu ideaalne elamuskeskus? Jaga oma mõtet!</p>
     </div>
 
     <form id="ideaForm">
         <div class="form-group">
-            <label for="name">Sinu nimi (või hüüdnimi)</label>
-            <input type="text" id="name" placeholder="Kirjuta siia..." required>
+            <label for="name">Kuidas Sind hüüda?</label>
+            <input type="text" id="name" placeholder="nt. Saare SASS" required>
         </div>
 
         <div class="form-group">
-            <label for="category">Mis valdkond sind kõige rohkem huvitab?</label>
+            <label for="category">Mis võiks olla fookuses?</label>
             <select id="category">
-                <option value="lapsed">Laste mänguala</option>
-                <option value="teadus">Teadus ja haridus</option>
-                <option value="sport">Sport ja ronimine</option>
-                <option value="toit">Toitlustus ja sündmused</option>
-                <option value="muu">Midagi muud</option>
+                <option value="lapsed">👶 Laste Mängumaa 3.0</option>
+                <option value="teadus">🔬 Hull Teadlane & Kosmos</option>
+                <option value="sport">🧗‍♂️ Ronimine & Seiklus</option>
+                <option value="toit">🍔 Super Kohvik & Sündmused</option>
+                <option value="muu">✨ Midagi muud ägedat!</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="idea">Sinu hulljulge idee või ettepanek:</label>
-            <textarea id="idea" placeholder="Kirjelda vabas vormis, mis teeks sind õnnelikuks..."></textarea>
+            <label for="idea">Sinu idee (isegi kõige kreisim!):</label>
+            <textarea id="idea" placeholder="Kirjelda vabas vormis, mis teeks WOW-st koha, kuhu tahaksid tagasi tulla..."></textarea>
         </div>
 
-        <button type="submit">Saada oma mõte teele!</button>
+        <button type="submit">Saada Mõte Teele!</button>
     </form>
-
-    <div class="saaremaa-vibes">
-        "Kura kätt ja pärituult – teeme asja ära!"
-    </div>
 </div>
 
 <footer>
-    &copy; 2026 Uuenenud WOW Elamuskeskus | Saaremaa südames
+    &copy; 2026 Uus WOW Saaremaa | Teeme asja ära! 🌊
 </footer>
 
 <script>
     document.getElementById('ideaForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        alert('Aitäh! Sinu mõte on kätte saadud. Hakkame koos ehitama!');
+        // Mängulisem tagasiside
+        alert('Vau! ✨ Sinu mõte lendab otse meie tiimi lauale. Suur aitäh, et aitad!');
         this.reset();
     });
 </script>
