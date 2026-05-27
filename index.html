@@ -117,7 +117,7 @@
         <h3>🔒 Masking (Visitor Only)</h3>
         <p><small>Operator sees asterisks (****) instead of actual input.</small></p>
         <label>Isikukood (Masked): <span class="badge bg-mask">glia-masked</span></label>
-        <input type="text" class="sm_masked_field" placeholder="3900101....">
+        <input type="text" class="sm_cobrowsing_hidden_field" placeholder="3900101....">
         
         <label style="margin-top:15px; display:block;">Avalik nimi (Visible):</label>
         <input type="text" placeholder="Hannes-Gregor">
@@ -126,7 +126,7 @@
       <div class="feature-card">
         <h3>🚫 Hidden Elements</h3>
         <p><small>The operator will see an empty space or placeholder here.</small></p>
-        <div class="sm_hidden_element" style="background: #334155; padding: 15px; border-radius: 8px;">
+        <div class="sm_cobrowsing_hidden_field" style="background: #334155; padding: 15px; border-radius: 8px;">
           <span class="badge bg-hide">glia-hidden</span>
           <p>See sisu on operaatori jaoks <strong>nähvamatu</strong>.</p>
           <button style="background:var(--danger); border:none; color:white; padding:5px 10px; border-radius:4px;">Salajane nupp</button>
@@ -136,7 +136,7 @@
       <div class="feature-card">
         <h3>🖱️ Restricted Interaction</h3>
         <p><small>Operator can see this, but cannot click it.</small></p>
-        <button class="nav-link sm_disabled_element" onclick="alert('Ainult külastaja sai seda teha!')" style="width:100%; border:none; cursor:pointer;">
+        <button class="nav-link sm_cobrowsing_disabled_field" onclick="alert('Ainult külastaja sai seda teha!')" style="width:100%; border:none; cursor:pointer;">
           Vajuta (Ainult Külastaja)
         </button>
       </div>
