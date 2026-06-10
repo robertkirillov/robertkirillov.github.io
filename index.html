@@ -1,26 +1,662 @@
-<h3>🔒 Masking (Visitor Only)</h3>
-<p><small>Operator sees asterisks (****) instead of actual input.</small></p>
-<label>Isikukood (Masked): <span class="badge bg-mask">glia-masked</span></label>
-        <input type="text" class="sm_masked_field" placeholder="3900101....">
-        <input type="text" class="sm_cobrowsing_hidden_field" placeholder="3900101....">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glia Product Sandbox - Learning Environment</title>
+<style>
+  :root {
+    --bg: #0f1320; --panel: #161b2e; --panel2: #1d2440; --ink: #e8ecf5;
+    --muted: #9aa6c7; --line: #2a3354; --brand: #6c5ce7; --brand2: #00b894;
+    --warn: #fdcb6e; --bad: #ff6b6b; --ok: #00b894; --chip: #232b4a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.5; }
+  header { padding: 18px 24px; background: linear-gradient(90deg,#1a1f38,#241b46);
+    border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
+  header h1 { margin: 0; font-size: 18px; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  nav { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 24px; background: var(--panel);
+    border-bottom: 1px solid var(--line); position: sticky; top: 64px; z-index: 49; }
+  nav button { background: var(--chip); color: var(--muted); border: 1px solid var(--line);
+    padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+  nav button.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+  main { padding: 22px 24px 80px; max-width: 1180px; margin: 0 auto; }
+  section { display: none; }
+  section.active { display: block; }
+  h2 { font-size: 20px; margin: 0 0 4px; }
+  .lead { color: var(--muted); margin: 0 0 18px; font-size: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px; margin: 0 0 16px; }
+  .card h3 { margin: 0 0 10px; font-size: 15px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 820px){ .grid2,.grid3{ grid-template-columns: 1fr; } nav{ top: 86px; } }
+  label { display: block; font-size: 12px; color: var(--muted); margin: 8px 0 3px; }
+  input, select, textarea { width: 100%; background: var(--panel2); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px; font-size: 13px; }
+  textarea { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  button.act { background: var(--brand); color: #fff; border: none; padding: 9px 14px;
+    border-radius: 8px; cursor: pointer; font-size: 13px; margin: 8px 6px 0 0; }
+  button.act.alt { background: var(--brand2); }
+  button.act.ghost { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+  button.act.danger { background: var(--bad); }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+[3:37 PM]
+  pre { background: #0b0e1a; border: 1px solid var(--line); border-radius: 8px; padding: 12px;
+    overflow-x: auto; font-size: 12.5px; color: #c7d2fe; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px;
+    border: 1px solid var(--line); margin: 2px 4px 2px 0; }
+  .pill.ok{ color: var(--ok); border-color: var(--ok); }
+  .pill.bad{ color: var(--bad); border-color: var(--bad); }
+  .pill.warn{ color: var(--warn); border-color: var(--warn); }
+  .log { background:#0b0e1a; border:1px solid var(--line); border-radius:8px; padding:10px;
+    height: 180px; overflow-y: auto; font-family: ui-monospace, monospace; font-size: 12px; }
+  .log div { padding: 1px 0; border-bottom: 1px dashed #1c2238; }
+  .state { font-weight: 700; }
+  .visitor-page { background: #f6f7fb; color: #1b2138; border-radius: 8px; padding: 14px; }
+  .visitor-page h4 { margin: 0 0 8px; }
+  .visitor-page label { color: #5a6485; }
+  .visitor-page input { background:#fff; color:#1b2138; border:1px solid #cfd6ea; }
+  .agentview { background:#0b0e1a; border:1px dashed var(--brand); border-radius:8px; padding:14px; }
+  .agentview .row { font-family: ui-monospace, monospace; font-size:12.5px; padding:3px 0; }
+  .toggle { display:flex; align-items:center; gap:8px; margin:6px 0; }
+  .toggle input{ width:auto; }
+  table { width:100%; border-collapse: collapse; font-size:12.5px; }
+  th,td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }
+  th { color: var(--muted); font-weight:600; }
+  .muted { color: var(--muted); font-size:12.5px; }
+  .ok-box { border-left:3px solid var(--ok); padding-left:10px; }
+  .bad-box { border-left:3px solid var(--bad); padding-left:10px; }
+  .quiz-opt { display:block; width:100%; text-align:left; margin:5px 0; }
+  .cursor-dot { position:absolute; width:12px; height:12px; border-radius:50%;
+    background: var(--brand); border:2px solid #fff; pointer-events:none; transition: all .05s linear; }
+  .mirror-wrap { position: relative; }
+  .badge { font-size:11px; padding:1px 6px; border-radius:6px; background: var(--chip); color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Glia Product Sandbox</h1>
+  <p>A hands-on learning environment for new employees. Visitor side and agent side, correct vs misconfigured. Nothing here calls real Glia services - it simulates the documented behavior so you can experiment safely.</p>
+</header>
 
-<label style="margin-top:15px; display:block;">Avalik nimi (Visible):</label>
-<input type="text" placeholder="Hannes-Gregor">
-@@ -126,7 +126,7 @@ <h3>🔒 Masking (Visitor Only)</h3>
-<div class="feature-card">
-<h3>🚫 Hidden Elements</h3>
-<p><small>The operator will see an empty space or placeholder here.</small></p>
-        <div class="sm_hidden_element" style="background: #334155; padding: 15px; border-radius: 8px;">
-        <div class="sm_cobrowsing_hidden_field" style="background: #334155; padding: 15px; border-radius: 8px;">
-<span class="badge bg-hide">glia-hidden</span>
-<p>See sisu on operaatori jaoks <strong>nähvamatu</strong>.</p>
-<button style="background:var(--danger); border:none; color:white; padding:5px 10px; border-radius:4px;">Salajane nupp</button>
-@@ -136,7 +136,7 @@ <h3>🚫 Hidden Elements</h3>
-<div class="feature-card">
-<h3>🖱️ Restricted Interaction</h3>
-<p><small>Operator can see this, but cannot click it.</small></p>
-        <button class="nav-link sm_disabled_element" onclick="alert('Ainult külastaja sai seda teha!')" style="width:100%; border:none; cursor:pointer;">
-        <button class="nav-link sm_cobrowsing_disabled_field" onclick="alert('Ainult külastaja sai seda teha!')" style="width:100%; border:none; cursor:pointer;">
-Vajuta (Ainult Külastaja)
-</button>
-</div>
+<nav id="nav"></nav>
+
+<main>
+  <!-- ============ INTEGRATION ============ -->
+  <section id="integration" class="active">
+    <h2>1. Integration & Embedding</h2>
+    <p class="lead">How Glia gets onto a customer site, and the JavaScript API surface a visitor page talks to.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>The embed snippet</h3>
+        <p class="muted">A single async script tag loads the integration. The global object it exposes is <code>window.sm</code>.</p>
+        <pre><script async
+  src="https://api.glia.com/salemove_integration.js">
+</script>
+
+<script>
+  // Resolve the public API (returns a Promise)
+  window.sm.getApi({ version: 'v1' }).then(function (glia) {
+    console.log('site:',    glia.getSiteId());
+    console.log('visitor:', glia.getVisitorId());
+  });
+</script></pre>
+      </div>
+      <div class="card">
+        <h3>Try the API surface</h3>
+        <p class="muted">A mock <code>sm</code> instance is loaded below. Call the real method names.</p>
+[3:37 PM]
+```
+        <button class="act" onclick="callApi('getSiteId')">getSiteId()</button>
+        <button class="act" onclick="callApi('getVisitorId')">getVisitorId()</button>
+        <button class="act alt" onclick="callApi('queueForEngagement')">queueForEngagement('text')</button>
+        <button class="act ghost" onclick="callApi('getBrowserContext')">getBrowserContext()</button>
+        <div class="log" id="apiLog" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Key concepts you must internalize</h3>
+      <table>
+        <tr><th>Concept</th><th>What it is</th></tr>
+        <tr><td><code>account_id</code></td><td>The customer (top-level tenant).</td></tr>
+        <tr><td><code>site_id</code></td><td>A site under an account. Visitor config is resolved by explicit <code>site_id</code> OR by the page <code>referrer</code> (hostname + path).</td></tr>
+        <tr><td><code>visitor_id</code></td><td>Identifies the browser/visitor session.</td></tr>
+        <tr><td><code>interaction_id</code></td><td>The id that ties engagement, routing, attributes, and media together across services.</td></tr>
+        <tr><td>Access token</td><td>Bootstrapped during visitor config; opaque tokens and JWT id_tokens support authenticated visitors.</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ ATTRIBUTES ============ -->
+  <section id="attributes">
+    <h2>2. Visitor Context & Attributes</h2>
+    <p class="lead">Standard visitor info plus custom key-value attributes. Note the reserved prefix and the limits - both are common sources of confusion.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>updateInformation()</h3>
+        <label>name</label><input id="vName" value="Jordan Lee" />
+        <label>email</label><input id="vEmail" value="jordan@example.com" />
+        <label>phone</label><input id="vPhone" value="+1 555 0100" />
+        <label>note</label><input id="vNote" value="VIP - mortgage inquiry" />
+        <label>externalId</label><input id="vExt" value="crm-88213" />
+        <label>customAttributes (key=value per line)</label>
+        <textarea id="vCustom" rows="4">plan=premium
+last_page=/loans
+cart_value=12400</textarea>
+        <label>customAttributesUpdateMethod</label>
+        <select id="vMethod"><option>replace</option><option>merge</option></select>
+        <button class="act" onclick="submitInfo()">updateInformation()</button>
+      </div>
+      <div class="card">
+        <h3>What gets sent (and validated)</h3>
+        <div class="log" id="attrLog" style="height:340px"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Rules to remember</h3>
+      <span class="pill warn">glia. prefix is reserved</span>
+      <span class="pill">50 reserved (glia.*) max</span>
+      <span class="pill">20 custom attributes max</span>
+      <span class="pill">100 ops per request</span>
+      <span class="pill">~2 year TTL</span>
+[3:37 PM]
+<p class="muted">Custom attribute keys must not start with <code>glia.</code> - that namespace is reserved by the platform. Method <code>replace</code> overwrites the whole custom set; <code>merge</code> only adds/updates the keys you send. Picking <code>replace</code> when you meant <code>merge</code> silently drops attributes set earlier in the session - a frequent support ticket.</p>
+    </div>
+  </section>
+
+  <!-- ============ ENGAGEMENT ============ -->
+  <section id="engagement">
+    <h2>3. Core Engagement Functionality</h2>
+```
+[3:37 PM]
+```
+    <p class="lead">Visitor-side request, agent-side accept, and the full lifecycle. Watch the state names - they are the real ones services emit.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Visitor side</h3>
+        <label>Media</label>
+        <select id="engMedia"><option value="text">text (chat)</option><option value="audio">audio</option><option value="video">video</option><option value="phone">phone</option></select>
+        <button class="act" onclick="visitorQueue()">queueForEngagement()</button>
+        <button class="act ghost" onclick="visitorCancel()">visitor cancel</button>
+        <div style="margin-top:10px">Request state: <span class="state" id="reqState">-</span></div>
+        <div>Engagement state: <span class="state" id="engState">-</span></div>
+      </div>
+      <div class="card">
+        <h3>Agent side</h3>
+        <div id="incoming" class="muted">No incoming requests.</div>
+        <button class="act alt" id="btnAccept" onclick="agentAccept()" disabled>accept</button>
+        <button class="act danger" id="btnDecline" onclick="agentDecline()" disabled>decline</button>
+        <button class="act ghost" id="btnUpgrade" onclick="mediaUpgrade()" disabled>offer media upgrade</button>
+        <button class="act ghost" id="btnEnd" onclick="endEngagement()" disabled>end engagement</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Event & state log</h3>
+      <div class="log" id="engLog"></div>
+      <p class="muted" style="margin-top:8px">Request states: <code>pending → acknowledged → accepted</code> (or <code>failed</code>: timed_out / visitor_cancel / operator_cancel). Engagement states: <code>ongoing → ended</code>. An <b>observation</b> is different - an operator watching a visitor one-way, with no two-way engagement.</p>
+    </div>
+  </section>
+
+  <!-- ============ ROUTING ============ -->
+  <section id="routing">
+    <h2>4. Routing & Queue Concepts</h2>
+    <p class="lead">A simplified version of the ACD matcher. Configure operators, drop a ticket in, and see who gets selected and why.</p>
+
+    <div class="card">
+      <h3>Operators</h3>
+      <table id="opTable">
+        <tr><th>Operator</th><th>Presence</th><th>In queue "sales"</th><th>Capacity (max)</th><th>Active engagements</th></tr>
+      </table>
+      <button class="act ghost" onclick="renderOps()">reset operators</button>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Create a queue ticket</h3>
+        <label>Request type</label>
+        <select id="tType"><option>engagement</option><option>transfer</option><option>join</option></select>
+        <label>Media</label>
+        <select id="tMedia"><option>text</option><option>audio</option><option>video</option></select>
+        <label>Priority (higher routed first)</label>
+        <input id="tPrio" type="number" value="0" />
+        <div class="toggle"><input type="checkbox" id="tRanking"><label style="margin:0">queue has operator_ranking_enabled</label></div>
+        <button class="act" onclick="routeTicket()">enqueue & match</button>
+      </div>
+      <div class="card">
+        <h3>Routing result</h3>
+[3:37 PM]
+<div>Ticket state: <span class="state" id="ticketState">-</span></div>
+        <div class="log" id="routeLog" style="height:200px;margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Reference</h3>
+```
+[3:37 PM]
+```
+      <p class="muted"><b>Ticket states</b> - active: <code>enqueued</code>, <code>request_sent</code>; intermediate: <code>pending_termination</code>; erroneous: <code>unstaffed</code>, <code>disconnected</code>, <code>visitor_conflict</code>, <code>forbidden</code>, <code>full</code>; terminal: <code>finished</code>, <code>canceled</code>, <code>failed</code>.</p>
+      <p class="muted"><b>An operator is suitable</b> when: in one of the ticket's queues, presence is <code>available</code>, no conflict in the last 30s, capacity not exceeded (<code>multi_engagement_max_count</code>), and the media is engageable. When several qualify, ranking breaks ties by fewest active engagements (or explicit operator rank when <code>operator_ranking_enabled</code>). No suitable operator → <code>unstaffed</code>. Messaging tickets carry a 24h SLA and a <code>fallback_queue_id</code> can catch overflow.</p>
+    </div>
+  </section>
+
+  <!-- ============ COBROWSE ============ -->
+  <section id="cobrowse">
+    <h2>5. Cobrowse Behavior</h2>
+    <p class="lead">The left panel is the visitor's page. The right panel is what the agent sees through cobrowse, after masking and mode rules are applied. Type and move your mouse over the visitor panel.</p>
+
+    <div class="card">
+      <h3>Cobrowse mode</h3>
+      <select id="cbMode" onchange="updateAgentView()">
+        <option value="observation">Observation (one-way: visitor → operator)</option>
+        <option value="engagement">Engagement (two-way, operator can interact)</option>
+        <option value="pointer">Pointer (mouse + scroll only)</option>
+        <option value="scroller">Scroller (scroll only)</option>
+      </select>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Visitor page <span class="badge">live</span></h3>
+        <div class="visitor-page mirror-wrap" id="visitorPage" onmousemove="trackCursor(event)">
+          <h4>Account login</h4>
+          <label>Username</label>
+          <input id="cbUser" value="jordan.lee" oninput="updateAgentView()" />
+          <label>Password <span class="badge">type=password → always masked</span></label>
+          <input id="cbPass" type="password" value="hunter2secret" oninput="updateAgentView()" />
+          <label>Card number <span class="badge">.sm_cobrowsing_masked_field</span></label>
+          <input id="cbCard" class="sm_cobrowsing_masked_field" value="4111111111111111" oninput="updateAgentView()" />
+          <label>SSN <span class="badge">.sm_cobrowsing_hidden_field</span></label>
+          <input id="cbSsn" class="sm_cobrowsing_hidden_field" value="123-45-6789" oninput="updateAgentView()" />
+          <label>Promo code <span class="badge">.sm_cobrowsing_disabled_field</span></label>
+          <input id="cbPromo" class="sm_cobrowsing_disabled_field" value="SPRING25" oninput="updateAgentView()" />
+        </div>
+      </div>
+      <div class="card">
+        <h3>Agent view (mirrored)</h3>
+        <div class="agentview mirror-wrap" id="agentView"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Documented cobrowse limitations</h3>
+      <span class="pill bad">Canvas not mirrored</span>
+      <span class="pill bad">Native <select> open state</span>
+      <span class="pill bad">CSS :hover/:focus state</span>
+[3:37 PM]
+<span class="pill bad">Cross-origin iframes</span>
+      <span class="pill warn">Shadow DOM needs care</span>
+```
+[3:37 PM]
+```
+      <p class="muted">Cross-origin iframes need the cobrowse source loaded inside each iframe. Canvas content can be mirrored by dumping it to an image and using <code>changeElementAttributesForCobrowsing()</code>. Pseudo-selector states cannot be forced programmatically.</p>
+    </div>
+  </section>
+
+  <!-- ============ MASKING ============ -->
+  <section id="masking">
+    <h2>6. Masking Behavior</h2>
+    <p class="lead">Two masking systems: cobrowse field masking (CSS-class driven, above) and chat/transcript PII masking (regex driven). Both replace characters with asterisks of equal length.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Chat PII masking</h3>
+        <p class="muted">Length-preserving asterisk replacement. The platform tool takes regex patterns; here are sample card/SSN/email patterns.</p>
+        <label>Visitor message</label>
+        <textarea id="maskIn" rows="4">My card is 4111 1111 1111 1111, SSN 123-45-6789, email jordan@example.com</textarea>
+        <button class="act" onclick="runMask()">mask()</button>
+        <label>Masked (stored / shown to others)</label>
+        <pre id="maskOut">-</pre>
+      </div>
+      <div class="card">
+        <h3>Cobrowse field masking summary</h3>
+        <table>
+          <tr><th>Mechanism</th><th>Effect on agent view</th></tr>
+          <tr><td><code>type="password"</code></td><td>Always masked (asterisks)</td></tr>
+          <tr><td><code>.sm_cobrowsing_masked_field</code></td><td>Value masked with asterisks</td></tr>
+          <tr><td><code>.sm_cobrowsing_hidden_field</code></td><td>Value sent as null (blank)</td></tr>
+          <tr><td><code>.sm_cobrowsing_disabled_field</code></td><td>Visible but operator cannot interact</td></tr>
+        </table>
+        <p class="muted">The class prefix (<code>sm_</code>) is configurable per integration. Masking is class-based - there is no <code>data-*</code> attribute convention.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ IFRAME ============ -->
+  <section id="iframe">
+    <h2>7. Iframe Integrations & Common Issues</h2>
+    <p class="lead">Glia often runs inside an iframe, and customers often embed their own content in iframes too. Toggle between a correct setup and the usual misconfigurations.</p>
+
+    <div class="grid2">
+      <div class="card ok-box">
+        <h3>Correctly configured</h3>
+        <pre><!-- same-origin or properly allowed -->
+<iframe
+  src="https://app.example.com/widget"
+  sandbox="allow-scripts allow-same-origin
+           allow-forms allow-popups">
+</iframe>
+
+Content-Security-Policy:
+  frame-src https://api.glia.com;
+  script-src https://api.glia.com;</pre>
+        <p class="muted">Scripts run, same-origin reads succeed, the integration script is allowed by CSP, third-party cookies permitted where required.</p>
+      </div>
+      <div class="card bad-box">
+        <h3>Common misconfigurations</h3>
+        <button class="act ghost" onclick="showIframeIssue('sandbox')">missing allow-scripts</button>
+        <button class="act ghost" onclick="showIframeIssue('origin')">cross-origin read</button>
+        <button class="act ghost" onclick="showIframeIssue('csp')">CSP blocks script</button>
+[3:37 PM]
+<button class="act ghost" onclick="showIframeIssue('cookie')">3rd-party cookies blocked</button>
+        <div class="log" id="iframeLog" style="height:170px;margin-top:10px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MISTAKES ============ -->
+```
+[3:37 PM]
+  <section id="mistakes">
+    <h2>8. Common Implementation Mistakes</h2>
+    <p class="lead">Misconfigured vs correct, side by side. These map directly to recurring support tickets.</p>
+    <div id="mistakeList"></div>
+  </section>
+
+  <!-- ============ TROUBLESHOOTING ============ -->
+  <section id="troubleshoot">
+    <h2>9. Support & Troubleshooting Scenarios</h2>
+    <p class="lead">Read the symptom, pick the most likely cause, then reveal the explanation. Built from realistic scenarios.</p>
+    <div id="quiz"></div>
+  </section>
+</main>
+
+<script>
+/* ---------- nav ---------- */
+const SECTIONS = [
+  ['integration','Integration'],['attributes','Visitor Attributes'],['engagement','Engagement'],
+  ['routing','Routing & Queues'],['cobrowse','Cobrowse'],['masking','Masking'],
+  ['iframe','Iframe'],['mistakes','Common Mistakes'],['troubleshoot','Troubleshooting']
+];
+const nav = document.getElementById('nav');
+SECTIONS.forEach(([id,label],i)=>{
+  const b = document.createElement('button');
+  b.textContent = label; b.className = i===0?'active':'';
+  b.onclick = ()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('main section').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+  };
+  nav.appendChild(b);
+});
+function log(elId, msg, cls){
+  const el = document.getElementById(elId);
+  const d = document.createElement('div');
+  d.innerHTML = msg; if(cls) d.style.color = cls;
+  el.appendChild(d); el.scrollTop = el.scrollHeight;
+}
+
+/* ---------- mock sm API ---------- */
+const sm = {
+  _siteId: '7c1f...site', _visitorId: 'v-3391-abf2',
+  getSiteId(){ return this._siteId; },
+  getVisitorId(){ return this._visitorId; },
+  queueForEngagement(media){ return Promise.resolve({state:'pending', media}); },
+  getBrowserContext(){ return Promise.resolve({tab_id:'tab-1', url: location.href, status:'active'}); }
+};
+function callApi(name){
+  try{
+    if(name==='queueForEngagement'){ sm.queueForEngagement('text').then(r=>log('apiLog','queueForEngagement(text) → '+JSON.stringify(r))); return; }
+    if(name==='getBrowserContext'){ sm.getBrowserContext().then(r=>log('apiLog','getBrowserContext() → '+JSON.stringify(r))); return; }
+    log('apiLog', name+'() → '+JSON.stringify(sm[name]()));
+  }catch(e){ log('apiLog','error: '+e.message, '#ff6b6b'); }
+}
+
+/* ---------- attributes ---------- */
+function submitInfo(){
+  const el = document.getElementById('attrLog'); el.innerHTML='';
+  const custom = {}; let bad=[];
+  document.getElementById('vCustom').value.split('\n').forEach(line=>{
+    line=line.trim(); if(!line) return;
+    const [k,...rest]=line.split('='); const key=k.trim();
+    if(key.startsWith('glia.')) bad.push(key);
+    custom[key]=rest.join('=').trim();
+  });
+  const payload = {
+    name: document.getElementById('vName').value,
+    email: document.getElementById('vEmail').value,
+    phone: document.getElementById('vPhone').value,
+    note: document.getElementById('vNote').value,
+    external_id: document.getElementById('vExt').value,
+    custom_attributes: custom,
+    custom_attributes_update_method: document.getElementById('vMethod').value
+  };
+  log('attrLog','POST visitor info (wire keys underscored):');
+  log('attrLog','<pre style="margin:6px 0">'+JSON.stringify(payload,null,2)+'</pre>');
+[3:37 PM]
+  if(bad.length) log('attrLog','REJECTED: keys use reserved glia. prefix → '+bad.join(', '), '#ff6b6b');
+  if(Object.keys(custom).length>20) log('attrLog','REJECTED: more than 20 custom attributes', '#ff6b6b');
+  if(!bad.length && Object.keys(custom).length<=20){
+    log('attrLog','accepted ('+document.getElementById('vMethod').value+' method)', '#00b894');
+    if(payload.custom_attributes_update_method==='replace')
+      log('attrLog','note: replace overwrites the entire custom set for this interaction', '#fdcb6e');
+  }
+}
+
+/* ---------- engagement lifecycle ---------- */
+let eng = { req:null, engaged:false };
+function setReq(s){ document.getElementById('reqState').textContent=s; }
+function setEng(s){ document.getElementById('engState').textContent=s; }
+function visitorQueue(){
+  const media=document.getElementById('engMedia').value;
+  eng.req='pending'; setReq('pending'); setEng('-');
+  log('engLog','VISITOR queueForEngagement("'+media+'") → request_type=engagement');
+  log('engLog','request state: <b>pending</b>');
+  document.getElementById('incoming').innerHTML='Incoming '+media+' request (queue: sales) <span class="pill warn">pending</span>';
+  document.getElementById('btnAccept').disabled=false;
+  document.getElementById('btnDecline').disabled=false;
+  setTimeout(()=>{ if(eng.req==='pending'){ eng.req='acknowledged'; setReq('acknowledged'); log('engLog','operator acknowledged the request'); } },1200);
+}
+function visitorCancel(){
+  if(eng.req && eng.req!=='accepted'){ eng.req='failed'; setReq('failed (visitor_cancel)');
+    log('engLog','request <b>failed</b>: visitor_cancel', '#ff6b6b'); resetAgent(); }
+}
+function agentAccept(){
+  eng.req='accepted'; eng.engaged=true; setReq('accepted'); setEng('ongoing');
+  log('engLog','operator accepted → engagement state: <b>ongoing</b>', '#00b894');
+  log('engLog','ENGAGEMENT_START event dispatched to visitor');
+  document.getElementById('incoming').innerHTML='Engaged <span class="pill ok">ongoing</span>';
+  document.getElementById('btnAccept').disabled=true; document.getElementById('btnDecline').disabled=true;
+  document.getElementById('btnUpgrade').disabled=false; document.getElementById('btnEnd').disabled=false;
+}
+function agentDecline(){
+  eng.req='failed'; setReq('failed (operator_cancel)');
+  log('engLog','request <b>failed</b>: operator_cancel → re-queues or routes to fallback', '#ff6b6b'); resetAgent();
+}
+function mediaUpgrade(){
+  if(!eng.engaged) return;
+  log('engLog','operator offered media upgrade (chat → audio). Visitor must accept; media is renegotiated (offered_media vs accepted_media).', '#fdcb6e');
+}
+function endEngagement(){
+  if(!eng.engaged) return; eng.engaged=false; setEng('ended');
+  log('engLog','ENGAGEMENT_END dispatched. end_reason=normal. Engagement state: <b>ended</b>');
+  resetAgent();
+}
+function resetAgent(){
+  document.getElementById('btnAccept').disabled=true; document.getElementById('btnDecline').disabled=true;
+  document.getElementById('btnUpgrade').disabled=true; document.getElementById('btnEnd').disabled=true;
+  document.getElementById('incoming').innerHTML='No incoming requests.';
+}
+
+/* ---------- routing matcher ---------- */
+let OPERATORS = [];
+function defaultOps(){
+  return [
+    {name:'Ava',  presence:'available', inQueue:true,  max:3, active:1, rank:1},
+    {name:'Ben',  presence:'available', inQueue:true,  max:2, active:2, rank:2},
+    {name:'Cara', presence:'away',      inQueue:true,  max:3, active:0, rank:3},
+[3:37 PM]
+    {name:'Dane', presence:'available', inQueue:false, max:3, active:0, rank:4}
+  ];
+}
+function renderOps(){
+  OPERATORS = defaultOps();
+  const t=document.getElementById('opTable');
+  t.innerHTML='<tr><th>Operator</th><th>Presence</th><th>In "sales"</th><th>Capacity</th><th>Active</th></tr>';
+  OPERATORS.forEach((o,i)=>{
+    const r=t.insertRow();
+    r.innerHTML=`<td>${o.name}</td>
+      <td><select onchange="OPERATORS[${i}].presence=this.value"><option ${o.presence==='available'?'selected':''}>available</option><option ${o.presence==='away'?'selected':''}>away</option><option ${o.presence==='busy'?'selected':''}>busy</option></select></td>
+      <td><input type="checkbox" ${o.inQueue?'checked':''} onchange="OPERATORS[${i}].inQueue=this.checked"></td>
+      <td><input type="number" value="${o.max}" style="width:60px" onchange="OPERATORS[${i}].max=+this.value"></td>
+      <td><input type="number" value="${o.active}" style="width:60px" onchange="OPERATORS[${i}].active=+this.value"></td>`;
+  });
+}
+function routeTicket(){
+  const lg='routeLog'; document.getElementById(lg).innerHTML='';
+  const ranking=document.getElementById('tRanking').checked;
+  const prio=+document.getElementById('tPrio').value;
+  document.getElementById('ticketState').textContent='enqueued';
+  log(lg,'ticket enqueued (priority='+prio+', type='+document.getElementById('tType').value+')');
+  const suitable = OPERATORS.filter(o=>{
+    if(!o.inQueue){ log(lg,o.name+' skipped: not in queue'); return false; }
+    if(o.presence!=='available'){ log(lg,o.name+' skipped: presence='+o.presence); return false; }
+    if(o.active>=o.max){ log(lg,o.name+' skipped: at capacity ('+o.active+'/'+o.max+')'); return false; }
+    log(lg,o.name+' is suitable (active '+o.active+'/'+o.max+')', '#00b894'); return true;
+  });
+  if(!suitable.length){
+    document.getElementById('ticketState').textContent='unstaffed';
+    log(lg,'no suitable operator → ticket state: unstaffed (will retry / hit fallback_queue_id)', '#ff6b6b');
+    return;
+  }
+  suitable.sort((a,b)=> ranking ? a.rank-b.rank : a.active-b.active);
+  const chosen=suitable[0];
+  document.getElementById('ticketState').textContent='request_sent';
+  log(lg,(ranking?'ranked by operator rank':'ranked by fewest active engagements')+' → request_sent to <b>'+chosen.name+'</b>', '#00b894');
+}
+
+/* ---------- cobrowse mirror ---------- */
+function maskStars(v){ return '*'.repeat((v||'').length); }
+function trackCursor(e){
+  if(['pointer','observation','engagement'].includes(document.getElementById('cbMode').value)){
+    let dot=document.getElementById('agentCursor');
+    const av=document.getElementById('agentView');
+    if(!dot){ dot=document.createElement('div'); dot.id='agentCursor'; dot.className='cursor-dot'; av.appendChild(dot); }
+    const r=e.currentTarget.getBoundingClientRect();
+    dot.style.left=(e.clientX-r.left)+'px'; dot.style.top=(e.clientY-r.top)+'px';
+  }
+}
+function updateAgentView(){
+  const mode=document.getElementById('cbMode').value;
+  const user=document.getElementById('cbUser').value;
+  const pass=document.getElementById('cbPass').value;
+  const card=document.getElementById('cbCard').value;
+  const promo=document.getElementById('cbPromo').value;
+  const av=document.getElementById('agentView');
+  av.innerHTML =
+    `<div class="row">mode: <b>${mode}</b></div>
+     <div class="row">Username: ${user}</div>
+     <div class="row">Password: ${maskStars(pass)} <span class="badge">password masked</span></div>
+[3:37 PM]
+     <div class="row">Card: ${maskStars(card)} <span class="badge">masked_field</span></div>
+     <div class="row">SSN: <i>(hidden - sent as null)</i> <span class="badge">hidden_field</span></div>
+     <div class="row">Promo: ${promo} <span class="badge">${mode==='engagement'?'visible, but operator cannot edit (disabled_field)':'visible'}</span></div>
+     <div class="row" style="color:#9aa6c7">${mode==='scroller'?'scroll position only is mirrored':mode==='pointer'?'pointer + scroll mirrored':mode==='observation'?'one-way: operator observes, cannot interact':'two-way: operator may interact (except disabled fields)'}</div>`;
+}
+
+/* ---------- PII masking ---------- */
+function runMask(){
+  let s=document.getElementById('maskIn').value;
+  const patterns=[
+    /\b(?:\d[ -]*?){13,16}\b/g,                 // card
+    /\b\d{3}-\d{2}-\d{4}\b/g,                    // ssn
+    /\b[\w.+-]+@[\w-]+\.[\w.-]+\b/g              // email
+  ];
+  patterns.forEach(re=> s=s.replace(re, m=>'*'.repeat(m.length)));
+  document.getElementById('maskOut').textContent=s;
+}
+
+/* ---------- iframe issues ---------- */
+const IFRAME_ISSUES={
+  sandbox:['sandbox missing allow-scripts','The iframe loads but the integration script never runs - the widget appears dead. Add allow-scripts (and allow-same-origin if it reads its own origin).'],
+  origin:['cross-origin window.top read','Reading window.top.* from a cross-origin iframe throws a DOMException (SecurityError). The code must wrap these reads in try/catch and fall back to postMessage-based context detection.'],
+  csp:['CSP blocks the integration script','script-src / frame-src does not allowlist api.glia.com, so the browser refuses to load salemove_integration.js. Add the Glia origins to the policy.'],
+  cookie:['third-party cookies blocked','When Glia runs in a cross-site iframe and the browser blocks third-party cookies, session/state can fail to persist. Prefer a first-party or storage-partition-aware setup.']
+};
+function showIframeIssue(k){
+  const [t,d]=IFRAME_ISSUES[k];
+  log('iframeLog','<b style="color:#ff6b6b">'+t+'</b>');
+  log('iframeLog',d,'#9aa6c7');
+}
+
+/* ---------- common mistakes ---------- */
+const MISTAKES=[
+  ['Resolving the wrong site','Relying on referrer matching when the page path is not configured, so visitor config resolves to the wrong site_id (or fails).','Pass an explicit site_id, or register the exact hostname + path so referrer resolution is deterministic.'],
+  ['customAttributes wiped','Calling updateInformation with method "replace" mid-session and dropping attributes set earlier.','Use "merge" unless you intend to overwrite the entire custom set.'],
+  ['Reserved namespace','Setting custom keys under the glia. prefix.','glia.* is reserved by the platform - use your own key names.'],
+  ['Unmasked sensitive fields','Sensitive inputs visible to operators during cobrowse because no masking class was applied.','Add sm_cobrowsing_masked_field / _hidden_field; password type is masked automatically.'],
+  ['Cobrowse blank inside iframe','Expecting cobrowse to work in a cross-origin iframe with no extra setup.','Load the cobrowse source inside each iframe; cross-origin iframes are not auto-cobrowsable.'],
+  ['Single-engagement starvation','Leaving multi_engagement_max_count unset so each operator handles one engagement, then wondering why tickets sit unstaffed.','Set capacity per operator if concurrent handling is intended.']
+];
+function renderMistakes(){
+[3:37 PM]
+  const c=document.getElementById('mistakeList');
+  MISTAKES.forEach(m=>{
+    const card=document.createElement('div'); card.className='card';
+    card.innerHTML=`<h3>${m[0]}</h3>
+      <div class="bad-box" style="margin-bottom:8px"><b>Misconfigured:</b> ${m[1]}</div>
+      <div class="ok-box"><b>Fix:</b> ${m[2]}</div>`;
+    c.appendChild(card);
+  });
+}
+
+/* ---------- troubleshooting quiz ---------- */
+const QUIZ=[
+  ['Visitor clicks chat, request sits and then disappears with no operator.',
+   ['All operators are at capacity or away → ticket goes unstaffed','The masking class is wrong','CSP blocks the script'],
+   0,'No suitable operator (presence not available, or capacity reached) means the ticket cannot be assigned and ends up unstaffed. Check operator presence and multi_engagement_max_count, and whether a fallback queue exists.'],
+  ['Operator sees the visitor\'s full card number during cobrowse.',
+   ['Password fields are never masked','The field lacks a masking class','Cobrowse mode is set to scroller'],
+   1,'Only type=password is auto-masked. Other sensitive inputs need sm_cobrowsing_masked_field (mask) or sm_cobrowsing_hidden_field (blank out).'],
+  ['The Glia widget loads in an iframe but never initializes.',
+   ['Visitor has no email set','iframe sandbox is missing allow-scripts, or CSP blocks the script','Priority is too low'],
+   1,'A dead widget inside an iframe is almost always sandbox/CSP: the integration script is prevented from running or loading. Verify allow-scripts and that api.glia.com is allowlisted.'],
+  ['Custom attributes set earlier in the session vanish after an update.',
+   ['customAttributesUpdateMethod is replace','The visitor_id changed','Queue priority reset them'],
+   0,'replace overwrites the entire custom attribute set. Switch to merge to preserve existing keys.']
+];
+function renderQuiz(){
+  const c=document.getElementById('quiz');
+  QUIZ.forEach((q,qi)=>{
+    const card=document.createElement('div'); card.className='card';
+    card.innerHTML=`<h3>Scenario ${qi+1}</h3><p>${q[0]}</p>`;
+    q[1].forEach((opt,oi)=>{
+      const b=document.createElement('button'); b.className='act ghost quiz-opt'; b.textContent=opt;
+      b.onclick=()=>{
+        const correct=oi===q[2];
+        b.style.borderColor=correct?'#00b894':'#ff6b6b';
+        let ex=card.querySelector('.exp');
+        if(!ex){ ex=document.createElement('div'); ex.className='exp muted'; ex.style.marginTop='8px'; card.appendChild(ex); }
+        ex.innerHTML=(correct?'<b style="color:#00b894">Correct.</b> ':'<b style="color:#ff6b6b">Not quite.</b> ')+q[3];
+      };
+      card.appendChild(b);
+    });
+    c.appendChild(card);
+  });
+}
+
+/* ---------- init ---------- */
+renderOps(); updateAgentView(); renderMistakes(); renderQuiz();
+</script>
+</body>
+</html>
