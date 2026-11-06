@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="et">
+<head>
+  <!-- Analytics & Glia Scripts -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NBLBG6VLD1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NBLBG6VLD1');
+  </script>
+  <script async src="https://api.glia.com/salemove_integration.js"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glia CoBrowsing Lab 2.0 - Leht 2</title>
+  
+  <style>
+    :root {
+      --primary: #6366f1;
+      --secondary: #ec4899;
+      --bg: #0f172a;
+      --text: #f8fafc;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: white;
+      padding: 12px 24px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: inline-block;
+      transition: 0.2s;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    
+    .nav-link:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>🧪 Glia Laboratory - Leht 2</h1>
+      <p>Olete edukalt navigeerinud teisele lehele (index2.html).</p>
+      <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 30px;">
+        Glia CoBrowsing sessioon peaks jätkuma ilma katkestusteta, kuna <em>salemove_integration.js</em> on laetud.
+      </p>
+    </header>
+
+    <button class="nav-link" style="background: var(--secondary);" onclick="window.location.href='index.html'">
+      ⬅️ Tagasi pealehele
+    </button>
+  </div>
+
+</body>
+</html>
